@@ -185,12 +185,42 @@ export function SprayTowerCalculator() {
                 </Badge>
               )}
 
-              {/* Logout Button - Desktop only in main row */}
+              {/* Export PDF Buttons - Desktop inline */}
+              {results && errorCount === 0 && (
+                <div className="hidden md:flex gap-1 md:gap-2">
+                  <Button
+                    onClick={handleExportPDF}
+                    disabled={isExportingPDF}
+                    size="sm"
+                    className="bg-blue-600 hover:bg-blue-700 text-xs h-6 px-2 md:h-8 md:px-3 cursor-pointer"
+                  >
+                    {isExportingPDF ? (
+                      <>
+                        <Loader2 className="w-2.5 h-2.5 md:w-3 md:h-3 animate-spin" />
+                        <span className="hidden sm:inline ml-1">Exporting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <FileDown className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                        <span className="hidden sm:inline ml-1">Report</span>
+                      </>
+                    )}
+                  </Button>
+                  
+                  <AIExportButton 
+                    input={input}
+                    results={results}
+                    className="text-xs h-6 px-2 md:h-8 md:px-3"
+                  />
+                </div>
+              )}
+
+              {/* Logout Button */}
               <Button
                 onClick={handleLogout}
                 variant="ghost"
                 size="sm"
-                className="hidden md:flex text-xs h-6 px-2 md:h-8 md:px-3 text-muted-foreground hover:text-foreground"
+                className="text-xs h-6 px-2 md:h-8 md:px-3 text-muted-foreground hover:text-foreground"
                 title="Logout"
               >
                 <LogOut className="w-2.5 h-2.5 md:w-3 md:h-3" />
@@ -199,46 +229,33 @@ export function SprayTowerCalculator() {
             </div>
           </div>
 
-          {/* Export buttons row - Separate row for mobile visibility */}
+          {/* Export buttons row - Mobile only */}
           {results && errorCount === 0 && (
-            <div className="flex items-center justify-between gap-2 mt-3 md:mt-4">
-              <div className="flex items-center gap-2 flex-1">
-                <Button
-                  onClick={handleExportPDF}
-                  disabled={isExportingPDF}
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-sm h-8 px-4 flex-1 sm:flex-none min-w-0"
-                >
-                  {isExportingPDF ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                      <span className="truncate">Exporting...</span>
-                    </>
-                  ) : (
-                    <>
-                      <FileDown className="w-4 h-4 mr-2" />
-                      <span>Report</span>
-                    </>
-                  )}
-                </Button>
-                
-                <AIExportButton 
-                  input={input}
-                  results={results}
-                  className="text-sm h-8 px-4 flex-1 sm:flex-none min-w-0"
-                />
-              </div>
-
-              {/* Logout Button - Mobile version */}
+            <div className="flex md:hidden items-center gap-2 mt-3">
               <Button
-                onClick={handleLogout}
-                variant="ghost"
+                onClick={handleExportPDF}
+                disabled={isExportingPDF}
                 size="sm"
-                className="md:hidden text-sm h-8 px-3 text-muted-foreground hover:text-foreground"
-                title="Logout"
+                className="bg-blue-600 hover:bg-blue-700 text-sm h-8 px-4 flex-1 cursor-pointer"
               >
-                <LogOut className="w-4 h-4" />
+                {isExportingPDF ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    <span>Exporting...</span>
+                  </>
+                ) : (
+                  <>
+                    <FileDown className="w-4 h-4 mr-2" />
+                    <span>Report</span>
+                  </>
+                )}
               </Button>
+              
+              <AIExportButton 
+                input={input}
+                results={results}
+                className="text-sm h-8 px-4 flex-1"
+              />
             </div>
           )}
         </div>

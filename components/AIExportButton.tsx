@@ -119,7 +119,7 @@ export default function AIExportButton({ input, results, className }: AIExportBu
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
-          className={className}
+          className={`${className} cursor-pointer`}
           disabled={!results}
         >
           <FileDown className="w-4 h-4 mr-2" />
