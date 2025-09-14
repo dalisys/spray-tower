@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, FileText, Brain, Shield, AlertTriangle } from 'lucide-react';
+import { Loader2, FileText, FileDown, Shield, AlertTriangle } from 'lucide-react';
 import { CalculatorInput, CalculationResults } from '@/types';
 // No client-side AI imports needed - all handled server-side
 
@@ -122,8 +122,8 @@ export default function AIExportButton({ input, results, className }: AIExportBu
           className={className}
           disabled={!results}
         >
-          <Brain className="h-4 w-4 mr-2" />
-          Export with AI
+          <FileDown className="w-4 h-4 mr-2" />
+          <span>AI Report</span>
         </Button>
       </DialogTrigger>
       

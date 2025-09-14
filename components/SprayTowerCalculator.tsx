@@ -19,7 +19,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { AlertTriangle, CheckCircle, Settings, Zap, Cog, BarChart3, ChevronDown, ChevronUp, Info, FileDown, Loader2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Settings, Zap, Cog, BarChart3, ChevronDown, ChevronUp, Info, FileDown, Loader2, LogOut } from 'lucide-react';
 import AIExportButton from './AIExportButton';
 
 export function SprayTowerCalculator() {
@@ -123,6 +123,18 @@ export function SprayTowerCalculator() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth', { method: 'DELETE' });
+      // Redirect to login page
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if API call fails
+      window.location.href = '/login';
+    }
+  };
+
   const errorCount = errors.filter(e => e.type === 'error').length;
   const warningCount = errors.filter(e => e.type === 'warning').length;
 
@@ -131,78 +143,104 @@ export function SprayTowerCalculator() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-white sticky top-0 z-10 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">
+        <div className="container mx-auto px-3 md:px-4 py-2 md:py-4">
+          {/* Main title and status row */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg md:text-3xl font-bold text-foreground truncate">
                 Spray Tower Calculator
               </h1>
-              <p className="text-sm md:text-base text-muted-foreground mt-1 md:mt-2">
+              <p className="text-xs md:text-base text-muted-foreground mt-0.5 md:mt-2 line-clamp-1 md:line-clamp-none">
                 Design gas scrubbing towers for pollution control systems
               </p>
             </div>
             
-            <div className="flex items-center gap-2 ml-4 shrink-0">
+            <div className="flex items-center gap-1 md:gap-2 shrink-0">
               {isCalculating && (
-                <Badge variant="secondary" className="animate-pulse text-xs">
+                <Badge variant="secondary" className="animate-pulse text-xs px-1 py-0.5 h-5">
                   <span className="hidden sm:inline">Calculating...</span>
                   <span className="sm:hidden">Calc...</span>
                 </Badge>
               )}
               
               {errorCount > 0 && (
-                <Badge variant="destructive" className="text-xs">
+                <Badge variant="destructive" className="text-xs px-1 py-0.5 h-5">
                   <span className="hidden sm:inline">{errorCount} Error{errorCount !== 1 ? 's' : ''}</span>
                   <span className="sm:hidden">{errorCount}E</span>
                 </Badge>
               )}
               
               {warningCount > 0 && (
-                <Badge variant="outline" className="text-orange-600 border-orange-600 text-xs">
+                <Badge variant="outline" className="text-orange-600 border-orange-600 text-xs px-1 py-0.5 h-5">
                   <span className="hidden sm:inline">{warningCount} Warning{warningCount !== 1 ? 's' : ''}</span>
                   <span className="sm:hidden">{warningCount}W</span>
                 </Badge>
               )}
               
               {results && errorCount === 0 && (
-                <Badge variant="default" className="bg-green-600 text-xs">
-                  <CheckCircle className="w-3 h-3 mr-1" />
+                <Badge variant="default" className="bg-green-600 text-xs px-1 py-0.5 h-5">
+                  <CheckCircle className="w-2.5 h-2.5 mr-0.5" />
                   <span className="hidden sm:inline">Ready</span>
                   <span className="sm:hidden">✓</span>
                 </Badge>
               )}
 
-              {/* Export PDF Buttons */}
-              {results && errorCount === 0 && (
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleExportPDF}
-                    disabled={isExportingPDF}
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-xs"
-                  >
-                    {isExportingPDF ? (
-                      <>
-                        <Loader2 className="w-3 h-3 animate-spin" />
-                        <span className="hidden sm:inline ml-1">Exporting...</span>
-                      </>
-                    ) : (
-                      <>
-                        <FileDown className="w-3 h-3" />
-                        <span className="hidden sm:inline ml-1">Export PDF</span>
-                      </>
-                    )}
-                  </Button>
-                  
-                  <AIExportButton 
-                    input={input}
-                    results={results}
-                    className="text-xs"
-                  />
-                </div>
-              )}
+              {/* Logout Button - Desktop only in main row */}
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="sm"
+                className="hidden md:flex text-xs h-6 px-2 md:h-8 md:px-3 text-muted-foreground hover:text-foreground"
+                title="Logout"
+              >
+                <LogOut className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                <span className="hidden md:inline ml-1">Logout</span>
+              </Button>
             </div>
           </div>
+
+          {/* Export buttons row - Separate row for mobile visibility */}
+          {results && errorCount === 0 && (
+            <div className="flex items-center justify-between gap-2 mt-3 md:mt-4">
+              <div className="flex items-center gap-2 flex-1">
+                <Button
+                  onClick={handleExportPDF}
+                  disabled={isExportingPDF}
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-sm h-8 px-4 flex-1 sm:flex-none min-w-0"
+                >
+                  {isExportingPDF ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      <span className="truncate">Exporting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FileDown className="w-4 h-4 mr-2" />
+                      <span>Report</span>
+                    </>
+                  )}
+                </Button>
+                
+                <AIExportButton 
+                  input={input}
+                  results={results}
+                  className="text-sm h-8 px-4 flex-1 sm:flex-none min-w-0"
+                />
+              </div>
+
+              {/* Logout Button - Mobile version */}
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                size="sm"
+                className="md:hidden text-sm h-8 px-3 text-muted-foreground hover:text-foreground"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 
