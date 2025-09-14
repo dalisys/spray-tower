@@ -1,0 +1,244 @@
+{
+    "metadata": {
+      "name": "spray_tower_constants",
+      "version": "1.0.0",
+      "units_base": "SI",
+      "notes": [
+        "All values SI unless explicitly noted.",
+        "Design ranges are conservative starting points; tune per application and validation."
+      ]
+    },
+  
+    "physical_constants": {
+      "g_m_per_s2": 9.80665,
+      "R_universal_J_per_molK": 8.314462618,
+      "R_universal_atm_m3_per_molK": 0.082057338
+    },
+  
+    "standard_conditions": {
+      "T_ref_K": 293.15,
+      "p_ref_Pa": 101325
+    },
+  
+    "fluids_reference": {
+      "air_dry": {
+        "MW_kg_per_kmol": 28.97,
+        "rho_kg_per_m3_at_293K_1atm": 1.204,
+        "mu_Pa_s_at_293K": 1.81e-5,
+        "cp_kJ_per_kgK_at_293K": 1.005,
+        "k_W_per_mK_at_293K": 0.026
+      },
+      "water_liquid": {
+        "MW_kg_per_kmol": 18.01528,
+        "rho_kg_per_m3_at_293K": 997.047,
+        "mu_Pa_s_at_293K": 0.001002,
+        "sigma_N_per_m_at_293K": 0.0728,
+        "cp_kJ_per_kgK_at_293K": 4.186,
+        "k_W_per_mK_at_293K": 0.598
+      }
+    },
+  
+    "unit_conversions": {
+      "pressure": {
+        "Pa_per_inH2O_4C": 249.0889,
+        "Pa_per_cmH2O_4C": 98.0665,
+        "Pa_per_bar": 1.0e5
+      },
+      "flow": {
+        "m3_per_h_per_acfm": 1.69901082,
+        "L_per_m3_per_gal_per_1000ft3": 0.133526471
+      },
+      "length": {
+        "m_per_in": 0.0254,
+        "m_per_ft": 0.3048
+      },
+      "mass": {
+        "kg_per_lb": 0.45359237
+      }
+    },
+  
+    "design_defaults": {
+      "gas_velocity_superficial_m_per_s": {
+        "recommended_range": [0.3, 1.5],
+        "upper_check_for_entrainment": 2.3,
+        "design_margin_factor_vs_upper": 0.7
+      },
+      "spray_droplet_SMD_d32_um": {
+        "preferred_range": [500, 1000],
+        "comment": "Balance interfacial area vs. carryover; verify with mist eliminator loading."
+      },
+      "LG_liquid_to_gas": {
+        "units": "L_liquid_per_m3_gas",
+        "typical_range": [0.07, 2.7],
+        "absorption_high_solubility_start": 1.5,
+        "FGD_rule_of_thumb_min": 3.0
+      },
+      "spray_zone_height_m": {
+        "initial_range": [3.0, 8.0],
+        "comment": "Tune by NTU/HTU or kinetic check and residence-time balance."
+      },
+      "pressure_drop_cmH2O": {
+        "typical_countercurrent": [1.0, 2.5],
+        "typical_overall": [1.0, 10.0]
+      },
+      "mist_eliminator": {
+        "target_efficiency_droplets_gt_10um": 0.99,
+        "max_allowable_face_velocity_m_per_s": 3.0
+      },
+      "safety_factors": {
+        "removal_efficiency_absolute_margin": 0.05,
+        "hydraulic_capacity_margin": 0.2
+      }
+    },
+  
+    "correlations": {
+      "tower_diameter": {
+        "equation": "D = sqrt(4*Q/(pi*u_g))",
+        "inputs": {
+          "Q": "gas volumetric flow, m3/s",
+          "u_g": "design superficial gas velocity, m/s"
+        },
+        "output": "D (m)"
+      },
+      "gas_residence_time": {
+        "equation": "t_gas = H / u_g",
+        "inputs": {
+          "H": "spray/contact height, m",
+          "u_g": "superficial gas velocity, m/s"
+        },
+        "output": "seconds"
+      },
+      "droplet_relative_velocity": {
+        "terminal_velocity_model": "Solve m*g = 0.5*rho_g*Cd*Ad*vt^2 with Re= rho_g*vt*d/mu_g and Cd by Schiller-Naumann",
+        "Cd_schiller_naumann": "Cd = 24/Re * (1 + 0.15*Re^0.687) for Re < 1e5",
+        "relative": "v_rel = vt - u_g (counter-current)",
+        "notes": "Use rho_g, mu_g at operating T,p; droplet dia d in m"
+      },
+      "absorption_NTU_simplified": {
+        "equation": "NG = (y_in - y_out) / y_out",
+        "assumptions": "Dilute solute, excess liquid/reactant; gas-phase controlled",
+        "outputs": "dimensionless transfer units"
+      },
+      "volume_from_KGa": {
+        "equation": "V = NG * Gm / (KGa)",
+        "inputs": {
+          "Gm": "gas molar flow, kmol/s",
+          "KGa": "overall gas-phase mass transfer coefficient x area per volume, kmol/(s·m3)"
+        },
+        "output": "V (m3)"
+      },
+      "KGa_empirical_spray_tower": {
+        "equation": "KGa = 0.1586 * Gm^0.8 * L_flux^0.4",
+        "units": {
+          "KGa": "kmol/(s·m3)",
+          "Gm": "kmol/s",
+          "L_flux": "L/(s·m2) of tower cross-section"
+        },
+        "scope": "Wet spray towers; originally fit for SO2 with alkaline slurries; use for scoping then calibrate."
+      },
+      "particulate_efficiency_generic": {
+        "form": "eta = 1 - exp(-N_t)",
+        "comment": "Map N_t to contacting power / droplet loading; calibrate with test data or vendor curves."
+      }
+    },
+  
+    "performance_heuristics": {
+      "PM_efficiency_vs_size": [
+        { "cutoff_um": 25, "eta_range": [0.9, 0.99], "note": "coarse particles" },
+        { "cutoff_um": 10, "eta_range": [0.8, 0.95] },
+        { "cutoff_um": 5,  "eta_range": [0.5, 0.8] },
+        { "cutoff_um": 2,  "eta_range": [0.3, 0.6] },
+        { "cutoff_um": 1,  "eta_range": [0.0, 0.2], "note": "submicron largely passes; consider venturi or filter" }
+      ],
+      "gas_absorption_rules": [
+        "Increase L/G and reduce u_g to raise NG and residence time.",
+        "Use reactive absorbents for poorly soluble gases to shift driving force.",
+        "Add spray tiers or hybridize with short packed bed for polishing if needed."
+      ]
+    },
+  
+    "nozzle_guidelines": {
+      "types": ["full_cone", "hollow_cone", "flat_fan"],
+      "selection_notes": [
+        "Aim for uniform cross-sectional coverage with overlap.",
+        "Target SMD (d32) ~ 0.5–1.0 mm for general counter-current towers.",
+        "Higher pressure -> finer droplets -> higher pumping energy and mist load."
+      ],
+      "pressure_bounds_bar": { "typical": [1, 6], "high_fogging": [10, 30] }
+    },
+  
+    "regulatory_context": {
+      "EU": {
+        "IED_reference": "Industrial Emissions Directive (2010/75/EU)",
+        "BAT_BREF_placeholders": [
+          "Large Combustion Plants",
+          "Waste Incineration",
+          "Common Waste Gas Treatment in the Chemical Sector",
+          "Non-Ferrous Metals",
+          "Minerals"
+        ],
+        "stack_testing_notes": [
+          "Report mg/Nm3 at specified O2 reference.",
+          "Use EN standards for sampling/analysis as applicable."
+        ]
+      },
+      "US": {
+        "framework": ["Clean Air Act", "NSPS", "NESHAP/MACT"],
+        "stack_testing_notes": [
+          "Report ppmvd or gr/dscf as applicable.",
+          "Use EPA reference methods; correct to dry, standard conditions."
+        ]
+      }
+    },
+  
+    "software_parameters": {
+      "numerics": {
+        "default_tolerance_rel": 1e-6,
+        "default_tolerance_abs": 1e-9,
+        "max_iterations": 200
+      },
+      "guards": {
+        "min_droplet_d_um": 100,
+        "max_droplet_d_um": 3000,
+        "min_u_g_m_per_s": 0.1,
+        "max_u_g_m_per_s": 2.3,
+        "min_LG_L_per_m3": 0.02,
+        "max_LG_L_per_m3": 5.0
+      },
+      "warnings": [
+        "If target PM < 1 µm removal > 80%, flag 'spray tower not recommended without high-energy assist'.",
+        "If KGa correlation used outside calibration range, flag 'validate with pilot/test data'."
+      ]
+    },
+  
+    "placeholders_to_extend": {
+      "species_database_schema": {
+        "name": "string",
+        "MW_kg_per_kmol": "number",
+        "Henry_CO2_equivalent_definition": "specify convention used (Hcp, Hcc, etc.)",
+        "Henry_at_298K": "number_or_null",
+        "dHenry_dT": "number_or_null",
+        "diffusivity_in_air_m2_per_s_at_298K": "number_or_null",
+        "diffusivity_in_water_m2_per_s_at_298K": "number_or_null",
+        "reaction_with_absorbent": [
+          {
+            "absorbent": "e.g., NaOH",
+            "stoichiometry": "text",
+            "kinetic_model": "e.g., pseudo-first-order with k app",
+            "k_app_units": "1/s or m/s etc.",
+            "k_app_value": "number_or_null"
+          }
+        ],
+        "safety": {
+          "toxicity_notes": "string",
+          "flammability": "e.g., NFPA rating if applicable"
+        }
+      },
+      "example_species_entries": [
+        { "name": "SO2", "MW_kg_per_kmol": 64.066, "Henry_at_298K": null },
+        { "name": "HCl", "MW_kg_per_kmol": 36.46, "Henry_at_298K": null },
+        { "name": "NH3", "MW_kg_per_kmol": 17.031, "Henry_at_298K": null }
+      ]
+    }
+  }
+  
