@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { CalculatorInput, CalculationResults, ValidationError } from '@/types';
 import { DEFAULT_VALUES } from '@/lib/constants';
-import { calculateSprayTower } from '@/lib/calculations/calculator';
+import { calculateSprayTowerWithCompliance, EnhancedCalculationResults } from '@/lib/calculations/calculator';
 import { validateInput, hasErrors } from '@/lib/validation';
 import { generateSprayTowerReport } from '@/lib/pdf-export';
 
@@ -30,7 +30,7 @@ export function SprayTowerCalculator() {
     settings: DEFAULT_VALUES.settings,
   });
 
-  const [results, setResults] = useState<CalculationResults | null>(null);
+  const [results, setResults] = useState<EnhancedCalculationResults | null>(null);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [isCalculating, setIsCalculating] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -56,7 +56,7 @@ export function SprayTowerCalculator() {
       // Only calculate if no critical errors
       if (!hasErrors(validationErrors)) {
         try {
-          const calculatedResults = calculateSprayTower(input);
+          const calculatedResults = calculateSprayTowerWithCompliance(input);
           setResults(calculatedResults);
         } catch (error) {
           console.error('Calculation error:', error);
@@ -1015,6 +1015,95 @@ export function SprayTowerCalculator() {
                       </CollapsibleContent>
                     </Card>
                   </Collapsible>
+
+                  {/* Optimization Information */}
+                  {results.optimizationInfo && (
+                    <Card className="p-4 bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+                      <h4 className="font-medium mb-3 text-green-900">Design Optimization</h4>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-green-800">Optimization Status:</span>
+                          <Badge variant={results.optimizationInfo.wasOptimized ? "default" : "secondary"}>
+                            {results.optimizationInfo.wasOptimized ? "Optimized" : "Not Required"}
+                          </Badge>
+                        </div>
+                        
+                        {results.optimizationInfo.wasOptimized && (
+                          <>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">Iterations:</span>
+                                <span>{results.optimizationInfo.iterations}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">Converged:</span>
+                                <Badge variant={results.optimizationInfo.convergenceReached ? "default" : "destructive"} className="text-xs">
+                                  {results.optimizationInfo.convergenceReached ? "Yes" : "No"}
+                                </Badge>
+                              </div>
+                              
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium">Final Status:</span>
+                                <Badge variant={results.complianceStatus.emissionLimitsMet ? "default" : "destructive"} className="text-xs">
+                                  {results.complianceStatus.emissionLimitsMet ? "Compliant" : "Best Effort"}
+                                </Badge>
+                              </div>
+                            </div>
+
+                            {/* Key Parameter Changes */}
+                            <div className="p-3 bg-white rounded-lg border">
+                              <h5 className="font-medium text-green-900 mb-2 text-sm">Optimized Parameters</h5>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                                <div className="space-y-1">
+                                  <div>L/G Ratio: {results.optimizationInfo.originalInput.tower.lgRatio.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.lgRatio.toFixed(2)} m³/m³</div>
+                                  <div>Gas Velocity: {results.optimizationInfo.originalInput.tower.gasVelocity.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.gasVelocity.toFixed(2)} m/s</div>
+                                </div>
+                                <div className="space-y-1">
+                                  <div>Droplet Size: {results.optimizationInfo.originalInput.tower.dropletSize.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.dropletSize.toFixed(2)} mm</div>
+                                  <div>Target Efficiency: {(results.optimizationInfo.originalInput.pollutant.targetEfficiency * 100).toFixed(1)} → {(results.optimizationInfo.optimizedInput.pollutant.targetEfficiency * 100).toFixed(1)}%</div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Optimization Log (Collapsible) */}
+                            <Collapsible>
+                              <CollapsibleTrigger className="w-full flex items-center justify-between text-left p-2 bg-green-100 rounded hover:bg-green-150 transition-colors">
+                                <span className="font-medium text-green-900 text-sm">Optimization Log</span>
+                                <ChevronDown className="w-4 h-4 text-green-700" />
+                              </CollapsibleTrigger>
+                              <CollapsibleContent>
+                                <div className="mt-2 p-3 bg-gray-50 rounded-lg max-h-48 overflow-y-auto">
+                                  <div className="space-y-1 text-xs font-mono text-gray-700">
+                                    {results.optimizationInfo.optimizationLog.map((logEntry, index) => (
+                                      <div key={index} className="whitespace-pre-wrap">
+                                        {logEntry.startsWith('✓') ? (
+                                          <span className="text-green-700 font-medium">{logEntry}</span>
+                                        ) : logEntry.startsWith('⚠') ? (
+                                          <span className="text-orange-700 font-medium">{logEntry}</span>
+                                        ) : (
+                                          <span>{logEntry}</span>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          </>
+                        )}
+
+                        {!results.optimizationInfo.wasOptimized && (
+                          <div className="p-3 bg-green-100 rounded-lg">
+                            <p className="text-sm text-green-800">
+                              ✓ Your original design already meets all regulatory requirements. No optimization was needed!
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  )}
                 </div>
               </>
             ) : (

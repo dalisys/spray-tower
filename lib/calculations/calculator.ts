@@ -9,6 +9,7 @@ import {
   calculateComplianceStatus 
 } from './advanced-calculations';
 import { UNIT_CONVERSIONS } from '@/lib/constants';
+import { optimizeForCompliance, shouldOptimizeForCompliance, OptimizationResult } from './compliance-optimizer';
 
 export function calculateSprayTower(input: CalculatorInput): CalculationResults {
   // Step 1: Calculate gas properties
@@ -126,4 +127,52 @@ export function calculateSprayTower(input: CalculatorInput): CalculationResults 
   };
   
   return results;
+}
+
+// Enhanced calculation function that includes compliance optimization
+export interface EnhancedCalculationResults extends CalculationResults {
+  optimizationInfo?: {
+    wasOptimized: boolean;
+    iterations: number;
+    convergenceReached: boolean;
+    optimizationLog: string[];
+    originalInput: CalculatorInput;
+    optimizedInput: CalculatorInput;
+  };
+}
+
+export function calculateSprayTowerWithCompliance(input: CalculatorInput): EnhancedCalculationResults {
+  // First, check if we need optimization for compliance
+  const needsOptimization = shouldOptimizeForCompliance(input);
+  
+  if (!needsOptimization) {
+    // Already compliant - return standard calculation
+    const results = calculateSprayTower(input);
+    return {
+      ...results,
+      optimizationInfo: {
+        wasOptimized: false,
+        iterations: 0,
+        convergenceReached: true,
+        optimizationLog: ['Design meets regulatory requirements without optimization'],
+        originalInput: input,
+        optimizedInput: input,
+      }
+    };
+  }
+  
+  // Perform optimization
+  const optimizationResult: OptimizationResult = optimizeForCompliance(input);
+  
+  return {
+    ...optimizationResult.results,
+    optimizationInfo: {
+      wasOptimized: true,
+      iterations: optimizationResult.iterations,
+      convergenceReached: optimizationResult.convergenceReached,
+      optimizationLog: optimizationResult.optimizationLog,
+      originalInput: input,
+      optimizedInput: optimizationResult.optimizedInput,
+    }
+  };
 }
