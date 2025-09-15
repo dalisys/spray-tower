@@ -349,7 +349,7 @@ export class SprayTowerPDFReport {
     this.addSectionTitle('Tower Design Parameters');
     const towerData = [
       ['L/G Ratio:', `${input.tower.lgRatio} m³/m³`],
-      ['Liquid Density:', `${input.tower.liquidDensity} kg/m³`],
+      ['Liquid Density:', `${input.tower.liquidDensity} ${input.settings.unitSystem === 'imperial' ? 'lb/ft³' : 'kg/m³'}`],
       ['Liquid Viscosity:', `${input.tower.liquidViscosity} Pa·s`],
       ['Droplet Size:', `${input.tower.dropletSize} mm`],
       ['Nozzle Pressure:', `${input.tower.nozzlePressure} bar`],
@@ -412,13 +412,13 @@ export class SprayTowerPDFReport {
     this.addSectionTitle('Secondary Parameters');
     const secondaryData = [
       ['Overall KG·a:', `${results.overallKGa.toExponential(2)} 1/s`],
-      ['Gas Density:', `${results.gasDensity.toFixed(3)} kg/m³`],
-      ['Liquid Rate:', `${results.liquidRate.toFixed(1)} m³/h`],
+      ['Gas Density:', `${results.gasDensity.toFixed(3)} ${input.settings.unitSystem === 'imperial' ? 'lb/ft³' : 'kg/m³'}`],
+      ['Liquid Rate:', `${results.liquidRate.toFixed(1)} ${input.settings.unitSystem === 'imperial' ? 'GPM' : 'm³/h'}`],
       ['Gas Residence Time:', `${results.gasResidenceTime.toFixed(2)} s`],
       ['NaOH Consumption:', `${results.naohConsumption.toFixed(2)} mol/h`],
       ['Interfacial Area:', `${results.interfacialArea.toFixed(2)} 1/m`],
-      ['Tower Cross-sectional Area:', `${results.towerArea.toFixed(2)} m²`],
-      ['Operating Gas Flow:', `${results.operatingGasFlow.toFixed(2)} m³/s`],
+      ['Tower Cross-sectional Area:', `${results.towerArea.toFixed(2)} ${input.settings.unitSystem === 'imperial' ? 'ft²' : 'm²'}`],
+      ['Operating Gas Flow:', `${results.operatingGasFlow.toFixed(2)} ${input.settings.unitSystem === 'imperial' ? 'ACFM' : 'm³/s'}`],
       ['Number of Transfer Units:', `${results.numberOfTransferUnits.toFixed(2)}`]
     ];
     this.addInfoTable(secondaryData);
@@ -429,8 +429,8 @@ export class SprayTowerPDFReport {
       ['Reynolds Number:', `${results.reynoldsNumber.toFixed(0)} (${results.reynoldsNumber < 2300 ? 'Laminar' : results.reynoldsNumber > 4000 ? 'Turbulent' : 'Transitional'})`],
       ['Schmidt Number:', `${results.schmidtNumber.toFixed(2)}`],
       ['Sherwood Number:', `${results.sherwoodNumber.toFixed(2)}`],
-      ['Droplet Terminal Velocity:', `${results.dropletTerminalVelocity.toFixed(3)} m/s`],
-      ['Gas-Droplet Relative Velocity:', `${results.relativeVelocity.toFixed(3)} m/s`],
+      ['Droplet Terminal Velocity:', `${results.dropletTerminalVelocity.toFixed(3)} ${input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}`],
+      ['Gas-Droplet Relative Velocity:', `${results.relativeVelocity.toFixed(3)} ${input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}`],
       ['Droplet Contact Time:', `${results.dropletContactTime.toFixed(3)} s`]
     ];
     this.addInfoTable(advancedData);
@@ -551,9 +551,9 @@ export class SprayTowerPDFReport {
       this.currentY += 8;
       
       const recommendations = [
-        `• Increase tower height by ${Math.ceil(results.requiredHeight * 0.3)}m (current: ${results.requiredHeight.toFixed(1)}m)`,
-        `• Increase L/G ratio by ${(input.tower.lgRatio * 0.2).toFixed(2)} m³/m³ (current: ${input.tower.lgRatio})`,
-        `• Reduce gas velocity by ${(((results.operatingGasFlow / results.towerArea) * 0.2)).toFixed(1)} m/s`,
+        `• Increase tower height by ${Math.ceil(results.requiredHeight * 0.3)}${input.settings.unitSystem === 'imperial' ? 'ft' : 'm'} (current: ${results.requiredHeight.toFixed(1)}${input.settings.unitSystem === 'imperial' ? 'ft' : 'm'})`,
+        `• Increase L/G ratio by ${(input.tower.lgRatio * 0.2).toFixed(2)} ${input.settings.unitSystem === 'imperial' ? 'gal/ft³' : 'm³/m³'} (current: ${input.tower.lgRatio})`,
+        `• Reduce gas velocity by ${(((results.operatingGasFlow / results.towerArea) * 0.2)).toFixed(1)} ${input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}`,
         `• Consider smaller droplet size (<${input.tower.dropletSize}mm)`,
         `• Add chemical enhancement or second absorption stage`,
         `• Optimize pH control (6-8 for acid gases)`,

@@ -62,8 +62,11 @@ export function SystemSettingsComponent({ values, onChange, errors }: SystemSett
           </Select>
           <p className="text-sm text-muted-foreground">
             {values.unitSystem === 'metric' 
-              ? 'm, kg, Pa, °C, m³/h' 
-              : 'ft, lb, in.H₂O, °F, ACFM'}
+              ? 'Equipment sizing: m, m², m/s, GPM' 
+              : 'Equipment sizing: ft, ft², ft/s, GPM'}
+          </p>
+          <p className="text-xs text-muted-foreground italic">
+            Process inputs remain in standard units (Nm³/h, mg/Nm³, °C) regardless of system
           </p>
         </div>
 

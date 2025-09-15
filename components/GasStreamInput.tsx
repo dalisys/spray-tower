@@ -1,6 +1,8 @@
 import { GasStreamProperties, ValidationError } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 
 interface GasStreamInputProps {
   values: GasStreamProperties;
@@ -24,9 +26,22 @@ export function GasStreamInput({ values, onChange, errors }: GasStreamInputProps
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="gasFlowRate">
-            Gas Flow Rate (Nm³/h)
-          </Label>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="gasFlowRate">
+              Gas Flow Rate (Nm³/h)
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-64">
+                <p className="font-semibold">Standard Industrial Units</p>
+                <p className="text-xs mt-1">
+                  Normal cubic meters per hour (Nm³/h) is the international standard for gas flow measurements at standard conditions (0°C, 1 atm). This unit is used globally, including in US industrial facilities, for environmental reporting and equipment specifications.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           <Input
             id="gasFlowRate"
             type="number"
@@ -45,9 +60,22 @@ export function GasStreamInput({ values, onChange, errors }: GasStreamInputProps
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="temperature">
-            Operating Temperature (°C)
-          </Label>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="temperature">
+              Operating Temperature (°C)
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-64">
+                <p className="font-semibold">Engineering Standard</p>
+                <p className="text-xs mt-1">
+                  Process temperatures are specified in Celsius (°C) as the international engineering standard. Even US industrial facilities typically use Celsius for process conditions and equipment specifications.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           <Input
             id="temperature"
             type="number"

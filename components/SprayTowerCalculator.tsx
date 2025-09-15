@@ -417,7 +417,7 @@ export function SprayTowerCalculator() {
                             <p className="font-semibold">Tower Diameter</p>
                             <p className="text-xs mt-1">
                               Calculated from gas velocity and flow rate: D = √(4×Q/(π×v))
-                              <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} m/s
+                              <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
                               <br />Gas flow: {input.gasStream.gasFlowRate} Nm³/h
                             </p>
                           </TooltipContent>
@@ -469,8 +469,8 @@ export function SprayTowerCalculator() {
                             <p className="font-semibold">Pressure Drop</p>
                             <p className="text-xs mt-1">
                               Total pressure loss through tower including gas flow resistance and liquid distributors
-                              <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} m/s
-                              <br />Tower height: {(results.requiredHeight || 0).toFixed(1)} m
+                              <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
+                              <br />Tower height: {(results.requiredHeight || 0).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft' : 'm'}
                             </p>
                           </TooltipContent>
                         </Tooltip>
@@ -547,7 +547,7 @@ export function SprayTowerCalculator() {
                             </div>
                             
                             <div className="flex items-center justify-between">
-                              <span className="font-medium">Gas Density: {(results.gasDensity || 0).toFixed(3)} kg/m³</span>
+                              <span className="font-medium">Gas Density: {(results.gasDensity || 0).toFixed(3)} {input.settings.unitSystem === 'imperial' ? 'lb/ft³' : 'kg/m³'}</span>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Info className="w-3 h-3 text-muted-foreground cursor-help" />
@@ -565,7 +565,7 @@ export function SprayTowerCalculator() {
                             </div>
                             
                             <div className="flex items-center justify-between">
-                              <span className="font-medium">Liquid Rate: {(results.liquidRate || 0).toFixed(1)} m³/h</span>
+                              <span className="font-medium">Liquid Rate: {(results.liquidRate || 0).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'GPM' : 'm³/h'}</span>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Info className="w-3 h-3 text-muted-foreground cursor-help" />
@@ -593,8 +593,8 @@ export function SprayTowerCalculator() {
                                   <p className="font-semibold">Gas Residence Time</p>
                                   <p className="text-xs mt-1">
                                     Time gas spends in contact with liquid: t = H/v
-                                    <br />Tower height: {(results.requiredHeight || 0).toFixed(1)} m
-                                    <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} m/s
+                                    <br />Tower height: {(results.requiredHeight || 0).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft' : 'm'}
+                                    <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
                                     <br />Longer contact = better absorption
                                   </p>
                                 </TooltipContent>
@@ -710,7 +710,7 @@ export function SprayTowerCalculator() {
                             
                             <div className="space-y-2">
                               <div className="flex items-center justify-between">
-                                <span className="font-medium">Terminal Velocity: {(results.dropletTerminalVelocity || 0).toFixed(2)} m/s</span>
+                                <span className="font-medium">Terminal Velocity: {(results.dropletTerminalVelocity || 0).toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}</span>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Info className="w-3 h-3 text-muted-foreground cursor-help" />
@@ -728,7 +728,7 @@ export function SprayTowerCalculator() {
                               </div>
                               
                               <div className="flex items-center justify-between">
-                                <span className="font-medium">Relative Velocity: {(results.relativeVelocity || 0).toFixed(2)} m/s</span>
+                                <span className="font-medium">Relative Velocity: {(results.relativeVelocity || 0).toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}</span>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Info className="w-3 h-3 text-muted-foreground cursor-help" />
@@ -737,8 +737,8 @@ export function SprayTowerCalculator() {
                                     <p className="font-semibold">Gas-Droplet Relative Velocity</p>
                                     <p className="text-xs mt-1">
                                       Difference between gas and droplet velocities
-                                      <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} m/s (upward)
-                                      <br />Terminal velocity: {(results.dropletTerminalVelocity || 0).toFixed(2)} m/s (downward)
+                                      <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'} (upward)
+                                      <br />Terminal velocity: {(results.dropletTerminalVelocity || 0).toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'} (downward)
                                       <br />Critical for mass transfer calculations
                                     </p>
                                   </TooltipContent>
@@ -755,8 +755,8 @@ export function SprayTowerCalculator() {
                                     <p className="font-semibold">Gas-Droplet Contact Time</p>
                                     <p className="text-xs mt-1">
                                       Time droplet spends falling through gas stream
-                                      <br />Height: {(results.requiredHeight || 0).toFixed(1)} m
-                                      <br />Terminal velocity: {(results.dropletTerminalVelocity || 0).toFixed(2)} m/s
+                                      <br />Height: {(results.requiredHeight || 0).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft' : 'm'}
+                                      <br />Terminal velocity: {(results.dropletTerminalVelocity || 0).toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
                                       <br />Longer contact = better absorption
                                     </p>
                                   </TooltipContent>
@@ -796,7 +796,7 @@ export function SprayTowerCalculator() {
                                         <p className="text-xs mt-1">
                                           Excellent collection efficiency for large particles
                                           <br />Mechanism: Inertial impaction and interception
-                                          <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} m/s
+                                          <br />Gas velocity: {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
                                           <br />Droplet size: {input.tower.dropletSize} mm
                                           <br />Large particles easily captured by droplets
                                         </p>
@@ -823,7 +823,7 @@ export function SprayTowerCalculator() {
                                         <p className="text-xs mt-1">
                                           Moderate collection efficiency for medium particles
                                           <br />Mechanism: Combination of inertial and diffusion
-                                          <br />Relative velocity: {(results.relativeVelocity || 0).toFixed(2)} m/s
+                                          <br />Relative velocity: {(results.relativeVelocity || 0).toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
                                           <br />Contact time: {(results.dropletContactTime || 0).toFixed(2)} s
                                           <br />Challenging size range for wet scrubbers
                                         </p>
@@ -952,9 +952,9 @@ export function SprayTowerCalculator() {
                                   <div className="space-y-2">
                                     <p className="font-medium text-red-800">To Meet Emission Limits:</p>
                                     <ul className="text-red-700 space-y-1 list-disc list-inside">
-                                      <li>Increase tower height (currently {(results.requiredHeight || 0).toFixed(1)} m)</li>
-                                      <li>Reduce gas velocity (currently {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} m/s)</li>
-                                      <li>Increase L/G ratio (currently {input.tower.lgRatio} m³/m³)</li>
+                                      <li>Increase tower height (currently {(results.requiredHeight || 0).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft' : 'm'})</li>
+                                      <li>Reduce gas velocity (currently {((results.operatingGasFlow || 0) / (results.towerArea || 1)).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'})</li>
+                                      <li>Increase L/G ratio (currently {input.tower.lgRatio} {input.settings.unitSystem === 'imperial' ? 'gal/ft³' : 'm³/m³'})</li>
                                       <li>Consider smaller droplets (&lt;{input.tower.dropletSize} mm)</li>
                                       <li>Add second absorption stage</li>
                                     </ul>
@@ -975,9 +975,9 @@ export function SprayTowerCalculator() {
                                 <div className="mt-3 p-2 bg-white rounded border">
                                   <p className="font-medium text-red-800 mb-1">Quick Fix Recommendations:</p>
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-red-700">
-                                    <div><strong>Height:</strong> +{Math.max(0, Math.ceil((results.requiredHeight || 0) * 0.3))}m</div>
-                                    <div><strong>L/G:</strong> +{(input.tower.lgRatio * 0.2).toFixed(2)} m³/m³</div>
-                                    <div><strong>Velocity:</strong> -{(((results.operatingGasFlow || 0) / (results.towerArea || 1)) * 0.2).toFixed(1)} m/s</div>
+                                    <div><strong>Height:</strong> +{Math.max(0, Math.ceil((results.requiredHeight || 0) * 0.3))}{input.settings.unitSystem === 'imperial' ? 'ft' : 'm'}</div>
+                                    <div><strong>L/G:</strong> +{(input.tower.lgRatio * 0.2).toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'gal/ft³' : 'm³/m³'}</div>
+                                    <div><strong>Velocity:</strong> -{(((results.operatingGasFlow || 0) / (results.towerArea || 1)) * 0.2).toFixed(1)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}</div>
                                   </div>
                                 </div>
                               </div>
@@ -1057,8 +1057,8 @@ export function SprayTowerCalculator() {
                               <h5 className="font-medium text-green-900 mb-2 text-sm">Optimized Parameters</h5>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
                                 <div className="space-y-1">
-                                  <div>L/G Ratio: {results.optimizationInfo.originalInput.tower.lgRatio.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.lgRatio.toFixed(2)} m³/m³</div>
-                                  <div>Gas Velocity: {results.optimizationInfo.originalInput.tower.gasVelocity.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.gasVelocity.toFixed(2)} m/s</div>
+                                  <div>L/G Ratio: {results.optimizationInfo.originalInput.tower.lgRatio.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.lgRatio.toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'gal/ft³' : 'm³/m³'}</div>
+                                  <div>Gas Velocity: {results.optimizationInfo.originalInput.tower.gasVelocity.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.gasVelocity.toFixed(2)} {input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}</div>
                                 </div>
                                 <div className="space-y-1">
                                   <div>Droplet Size: {results.optimizationInfo.originalInput.tower.dropletSize.toFixed(2)} → {results.optimizationInfo.optimizedInput.tower.dropletSize.toFixed(2)} mm</div>

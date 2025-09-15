@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Info } from 'lucide-react';
 
 interface PollutantInputProps {
   values: PollutantProperties;
@@ -60,9 +62,22 @@ export function PollutantInput({ values, onChange, errors }: PollutantInputProps
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="inletConcentration">
-            Inlet Concentration (mg/Nm³)
-          </Label>
+          <div className="flex items-center gap-2">
+            <Label htmlFor="inletConcentration">
+              Inlet Concentration (mg/Nm³)
+            </Label>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-64">
+                <p className="font-semibold">Environmental Standard</p>
+                <p className="text-xs mt-1">
+                  Pollutant concentrations are always expressed in milligrams per normal cubic meter (mg/Nm³) as per international environmental regulations. Both EU and US regulatory frameworks use this unit for emission reporting and compliance.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
           <Input
             id="inletConcentration"
             type="number"

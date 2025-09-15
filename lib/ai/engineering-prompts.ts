@@ -104,8 +104,8 @@ Primary Results:
 
 Secondary Results:
 - Overall KG·a: ${results.overallKGa.toExponential(3)} 1/s
-- Gas Density: ${results.gasDensity.toFixed(4)} kg/m³
-- Liquid Rate: ${results.liquidRate.toFixed(2)} m³/h
+- Gas Density: ${results.gasDensity.toFixed(4)} ${input.settings.unitSystem === 'imperial' ? 'lb/ft³' : 'kg/m³'}
+- Liquid Rate: ${results.liquidRate.toFixed(2)} ${input.settings.unitSystem === 'imperial' ? 'GPM' : 'm³/h'}
 - Gas Residence Time: ${results.gasResidenceTime.toFixed(3)} s
 - NaOH Consumption: ${results.naohConsumption.toFixed(2)} mol/h
 
@@ -113,7 +113,7 @@ Advanced Physics:
 - Reynolds Number: ${results.reynoldsNumber.toFixed(0)}
 - Schmidt Number: ${results.schmidtNumber.toFixed(3)}
 - Sherwood Number: ${results.sherwoodNumber.toFixed(3)}
-- Droplet Terminal Velocity: ${results.dropletTerminalVelocity.toFixed(4)} m/s
+- Droplet Terminal Velocity: ${results.dropletTerminalVelocity.toFixed(4)} ${input.settings.unitSystem === 'imperial' ? 'ft/s' : 'm/s'}
 
 Compliance Status:
 - Framework: ${results.complianceStatus.framework}
